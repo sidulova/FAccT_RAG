@@ -1,0 +1,10 @@
+PyPDF2
+langchain
+openai
+faiss-cpu
+chromadb
+torch
+transformers
+sentence-transformers
+fastapi
+

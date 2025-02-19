@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Medical Question Answering System</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+            #question-form { margin-bottom: 20px; }
+            #question { width: 80%; padding: 10px; }
+            button { padding: 10px 15px; background: #4285f4; color: white; border: none; cursor: pointer; }
+            #answer { background: #f5f5f5; padding: 15px; border-radius: 5px; min-height: 50px; margin-bottom: 20px; }
+            .loading { color: #888; }
+            .source { background: #e9f7fe; padding: 12px; margin-bottom: 15px; border-left: 4px solid #4285f4; }
+            .source-title { font-weight: bold; margin-bottom: 5px; }
+            .metadata { font-size: 0.85em; color: #666; margin-top: 8px; }
+            .metadata span { margin-right: 15px; }
+            h2 { border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+            #sources-section { margin-top: 30px; }
+        </style>
+    </head>
+    <body>
+        <h1>Medical Knowledge Assistant</h1>
+        <div id="question-form">
+            <input type="text" id="question" placeholder="Ask a medical question...">
+            <button onclick="askQuestion()">Submit</button>
+        </div>
+        <h2>Answer</h2>
+        <div id="answer">Ask something to get started!</div>
+        
+        <div id="sources-section">
+            <h2>Source References</h2>
+            <div id="sources">No sources to display yet.</div>
+        </div>
+
+        <script>
+        function askQuestion() {
+            const question = document.getElementById('question').value;
+            if (!question) return;
+            
+            const answerDiv = document.getElementById('answer');
+            const sourcesDiv = document.getElementById('sources');
+            
+            answerDiv.textContent = 'Loading...';
+            answerDiv.classList.add('loading');
+            sourcesDiv.textContent = 'Loading sources...';
+            
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display answer
+                answerDiv.textContent = data.answer;
+                answerDiv.classList.remove('loading');
+                
+                // Display sources
+                if (data.sources && data.sources.length > 0) {
+                    let sourcesHtml = '';
+                    data.sources.forEach(source => {
+                        let metadataHtml = '';
+                        if (source.metadata) {
+                            for (const [key, value] of Object.entries(source.metadata)) {
+                                metadataHtml += `<span><strong>${key}:</strong> ${value}</span>`;
+                            }
+                        }
+                        
+                        sourcesHtml += `
+                            <div class="source">
+                                <div class="source-title">Source ${source.chunk_id}</div>
+                                <div>${source.content}</div>
+                                <div class="metadata">${metadataHtml}</div>
+                            </div>
+                        `;
+                    });
+                    sourcesDiv.innerHTML = sourcesHtml;
+                } else {
+                    sourcesDiv.textContent = 'No source references available.';
+                }
+            })
+            .catch(error => {
+                answerDiv.textContent = 'Error: ' + error;
+                answerDiv.classList.remove('loading');
+                sourcesDiv.textContent = 'Error loading sources.';
+            });
+        }
+        </script>
+    </body>
+    </html>
