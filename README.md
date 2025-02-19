@@ -1,7 +1,7 @@
-# FAccT_RAG
-RAG System from Scientific PDFs
+# My personal papers RAG system
+RAG System from my personal Scientific PDFs
 
-## Features
+## Project Summary
 - **PDF Parsing**: Extract text from scientific PDFs.
 - **Chunking**: Split large documents into meaningful sections.
 - **Embedding**: Convert text into vector representations for efficient retrieval.
