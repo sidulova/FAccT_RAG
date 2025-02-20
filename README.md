@@ -13,7 +13,7 @@ RAG System from my personal Scientific PDFs
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/rag_from_pdfs.git
+git clone https://github.com/yourusername/science_papers_rag.git
 cd rag_from_pdfs
 python -m venv venv
 source venv/bin/activate 
